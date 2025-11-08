@@ -14,13 +14,180 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      api_keys: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          key_hash: string
+          key_prefix: string
+          last_used_at: string | null
+          name: string
+          owner_id: string
+          permissions: Json | null
+          rate_limit: number | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash: string
+          key_prefix: string
+          last_used_at?: string | null
+          name: string
+          owner_id: string
+          permissions?: Json | null
+          rate_limit?: number | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          key_hash?: string
+          key_prefix?: string
+          last_used_at?: string | null
+          name?: string
+          owner_id?: string
+          permissions?: Json | null
+          rate_limit?: number | null
+        }
+        Relationships: []
+      }
+      clicks: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device: string | null
+          id: string
+          ip_hash: string | null
+          os: string | null
+          referrer: string | null
+          url_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          ip_hash?: string | null
+          os?: string | null
+          referrer?: string | null
+          url_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          ip_hash?: string | null
+          os?: string | null
+          referrer?: string | null
+          url_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clicks_url_id_fkey"
+            columns: ["url_id"]
+            isOneToOne: false
+            referencedRelation: "urls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      urls: {
+        Row: {
+          click_count: number | null
+          created_at: string
+          deleted_at: string | null
+          description: string | null
+          expiry_at: string | null
+          id: string
+          is_public: boolean | null
+          meta: Json | null
+          owner_id: string
+          slug: string
+          target_url: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          click_count?: number | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          expiry_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          meta?: Json | null
+          owner_id: string
+          slug: string
+          target_url: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          click_count?: number | null
+          created_at?: string
+          deleted_at?: string | null
+          description?: string | null
+          expiry_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          meta?: Json | null
+          owner_id?: string
+          slug?: string
+          target_url?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      restore_url: { Args: { url_id: string }; Returns: undefined }
+      soft_delete_url: { Args: { url_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
