@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import Redirect from "./pages/Redirect";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,7 +31,9 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            {/* Short URL redirect - must be before catch-all route */}
+            <Route path="/:slug" element={<Redirect />} />
+            {/* Catch-all 404 route - must be last */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
