@@ -81,7 +81,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <Navbar isAuthenticated={true} />
+      <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12">
         <div className="max-w-6xl mx-auto">

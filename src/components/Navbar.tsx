@@ -5,13 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-interface NavbarProps {
-    isAuthenticated?: boolean;
-}
-
-export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
-    const { user, signOut } = useAuth();
+export const Navbar = () => {
+    const { user, session, signOut } = useAuth();
     const navigate = useNavigate();
+
+    // Determine authentication state from the auth context
+    const isAuthenticated = !!user && !!session;
 
     const getUserInitials = () => {
         if (user?.user_metadata?.full_name) {
@@ -75,7 +74,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
                                     <span>Dashboard</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive hover:text-white">
+                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive hover:bg-destructive hover:text-white focus:bg-destructive focus:text-white">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Logout</span>
                                 </DropdownMenuItem>

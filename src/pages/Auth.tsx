@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Navbar } from "@/components/Navbar";
 import { Link as LinkIcon, Mail, Lock, User } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -142,8 +143,10 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-subtle">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-subtle">
+      <Navbar />
+      <div className="flex items-center justify-center p-4 pt-24">
+        <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary mb-4 shadow-glow">
             <LinkIcon className="w-8 h-8 text-primary-foreground" />
@@ -286,6 +289,7 @@ export default function Auth() {
             </Tabs>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   );
