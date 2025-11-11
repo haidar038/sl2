@@ -27,13 +27,8 @@ export default defineConfig({
     },
     experimental: {
         renderBuiltUrl(filename, { hostType }) {
-            if (hostType === "js") {
-                return {
-                    runtime: `window.__toCdnUrl(${JSON.stringify(filename)})`,
-                };
-            } else {
-                return { relative: true };
-            }
+            // selalu gunakan relative URL untuk semua jenis asset
+            return { relative: true };
         },
     },
 });
