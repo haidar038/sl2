@@ -81,7 +81,9 @@ Create a `.env` file with your Supabase credentials:
 
 ```env
 VITE_SUPABASE_URL=your-supabase-url
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+VITE_SUPABASE_PROJECT_ID=your-project-id
+VITE_APP_DOMAIN=sl2.my.id
 ```
 
 ## Database Setup
@@ -93,6 +95,52 @@ The database schema includes:
 - **api_keys** - API authentication keys
 
 All tables have Row Level Security (RLS) enabled for multi-tenant security.
+
+## Deployment
+
+### Vercel Deployment (Recommended)
+
+This project is optimized for deployment on Vercel with custom domain support.
+
+**Quick Deploy:**
+
+1. Install Vercel CLI:
+   ```bash
+   npm i -g vercel
+   ```
+
+2. Deploy:
+   ```bash
+   vercel --prod
+   ```
+
+3. Configure environment variables in Vercel Dashboard
+
+**Important:** The project includes `vercel.json` configuration for proper SPA routing. This ensures short URL redirects work correctly in production.
+
+For detailed deployment instructions, see:
+- **[VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)** - Complete Vercel deployment guide
+- **[REDIRECT_SETUP.md](REDIRECT_SETUP.md)** - URL redirect configuration and testing
+
+### Custom Domain Setup
+
+See **[DOMAIN_SETUP.md](DOMAIN_SETUP.md)** for:
+- Domain configuration (currently: `sl2.my.id`)
+- DNS setup
+- SSL certificate configuration
+- Edge Function deployment
+
+### Theme-Aware Favicon
+
+The project includes responsive favicon that adapts to light/dark mode. See **[FAVICON_SETUP.md](FAVICON_SETUP.md)** for details on how it works and browser compatibility.
+
+## Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** - Project overview and development guidelines
+- **[VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md)** - Vercel deployment guide
+- **[REDIRECT_SETUP.md](REDIRECT_SETUP.md)** - URL redirect configuration
+- **[FAVICON_SETUP.md](FAVICON_SETUP.md)** - Theme-aware favicon setup
+- **[MIGRATION_INSTRUCTIONS.md](MIGRATION_INSTRUCTIONS.md)** - Database migrations
 
 ## Contributing
 
