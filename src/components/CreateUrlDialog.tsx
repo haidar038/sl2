@@ -148,7 +148,7 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
           <div className="space-y-2">
             <Label htmlFor="slug">Custom Alias (optional)</Label>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">short.link/</span>
+              <span className="text-sm text-muted-foreground">{import.meta.env.VITE_APP_DOMAIN || window.location.host}/</span>
               <Input
                 id="slug"
                 placeholder="my-link"

@@ -37,7 +37,8 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   const [loading, setLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showPermanentDeleteDialog, setShowPermanentDeleteDialog] = useState(false);
-  const shortUrl = `${window.location.origin}/s/${url.slug}`;
+  const domain = import.meta.env.VITE_APP_DOMAIN || window.location.host;
+  const shortUrl = `https://${domain}/${url.slug}`;
   const isDeleted = !!url.deleted_at;
   const isExpired = url.expiry_at && new Date(url.expiry_at) < new Date();
 
