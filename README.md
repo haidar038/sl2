@@ -1,73 +1,103 @@
-# Welcome to your Lovable project
+# ShortLink - Modern URL Shortener
 
-## Project info
+A production-ready URL shortening service built with React, TypeScript, and Supabase.
 
-**URL**: https://lovable.dev/projects/1c43e0fb-d82f-4737-bbb9-931b7387490a
+## Features
 
-## How can I edit this code?
+- **Custom URL Aliases** - Create branded, memorable short links with custom slugs
+- **Detailed Analytics** - Track clicks, referrers, devices, and geographic data in real-time
+- **QR Code Generation** - Generate and download QR codes for all your short URLs
+- **Secure & Private** - Enterprise-grade security with URL validation and IP hashing
+- **API Access** - Full REST API with authentication for automation and integrations
+- **Soft Deletes** - Recoverable URL deletion with 30-day retention period
+- **Edge Performance** - Lightning-fast redirects powered by Supabase Edge Functions
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: Vite + React 18 + TypeScript
+- **UI**: shadcn/ui + Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Row Level Security)
+- **State Management**: TanStack Query (React Query)
+- **Forms**: React Hook Form + Zod validation
+- **Edge Functions**: Deno runtime for global performance
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/1c43e0fb-d82f-4737-bbb9-931b7387490a) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 16+ and npm installed ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- Supabase account and project
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
+cd sl2
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# Install dependencies
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server (runs on port 8080)
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Build for Production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Production build
+npm run build
 
-**Use GitHub Codespaces**
+# Preview production build
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Linting
 
-## What technologies are used for this project?
+```bash
+npm run lint
+```
 
-This project is built with:
+## Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+├── components/          # React components
+│   ├── ui/             # shadcn/ui components
+│   └── ...             # Custom components
+├── pages/              # Route pages (Index, Auth, Dashboard, NotFound)
+├── integrations/       # Supabase client and types
+├── lib/                # Utility functions (slug generation, QR codes)
+└── hooks/              # Custom React hooks
 
-## How can I deploy this project?
+supabase/
+├── migrations/         # Database schema migrations
+└── functions/          # Edge functions (redirect logic)
+```
 
-Simply open [Lovable](https://lovable.dev/projects/1c43e0fb-d82f-4737-bbb9-931b7387490a) and click on Share -> Publish.
+## Environment Variables
 
-## Can I connect a custom domain to my Lovable project?
+Create a `.env` file with your Supabase credentials:
 
-Yes, you can!
+```env
+VITE_SUPABASE_URL=your-supabase-url
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Database Setup
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+The database schema includes:
+- **profiles** - User profile information
+- **urls** - Shortened URLs with metadata
+- **clicks** - Click analytics data
+- **api_keys** - API authentication keys
+
+All tables have Row Level Security (RLS) enabled for multi-tenant security.
+
+## Contributing
+
+Contributions are welcome! Please ensure all code passes linting and follows the existing code style.
+
+## License
+
+MIT License - see LICENSE file for details

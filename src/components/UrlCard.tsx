@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, ExternalLink, QrCode, Trash2, BarChart3, RotateCcw } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Copy, ExternalLink, QrCode, Trash2, BarChart3, RotateCcw, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { generateQRCode, downloadQRCode } from "@/lib/qrCode";
@@ -27,6 +35,8 @@ interface UrlCardProps {
 
 export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   const [loading, setLoading] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showPermanentDeleteDialog, setShowPermanentDeleteDialog] = useState(false);
   const shortUrl = `${window.location.origin}/s/${url.slug}`;
   const isDeleted = !!url.deleted_at;
   const isExpired = url.expiry_at && new Date(url.expiry_at) < new Date();
@@ -37,8 +47,7 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this URL?")) return;
-
+    setShowDeleteDialog(false);
     setLoading(true);
     try {
       const { error } = await supabase.rpc('soft_delete_url', { url_id: url.id });
@@ -66,6 +75,21 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
     }
   };
 
+  const handlePermanentDelete = async () => {
+    setShowPermanentDeleteDialog(false);
+    setLoading(true);
+    try {
+      const { error } = await supabase.rpc('permanent_delete_url', { url_id: url.id });
+      if (error) throw error;
+      toast.success("URL permanently deleted");
+      onUpdate?.();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to permanently delete URL");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGenerateQR = async () => {
     setLoading(true);
     try {
@@ -80,7 +104,7 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   };
 
   return (
-    <Card className={`p-6 ${isDeleted || isExpired ? 'opacity-60' : ''}`}>
+    <Card className="p-6 transition-all duration-300">
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
@@ -146,16 +170,28 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
 
           <div className="flex items-center gap-2">
             {isDeleted ? (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleRestore}
-                disabled={loading}
-                className="gap-1"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Restore
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleRestore}
+                  disabled={loading}
+                  className="gap-1"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  Restore
+                </Button>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => setShowPermanentDeleteDialog(true)}
+                  disabled={loading}
+                  className="gap-1"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  Delete Permanently
+                </Button>
+              </>
             ) : (
               <>
                 <Button
@@ -176,7 +212,7 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={handleDelete}
+                  onClick={() => setShowDeleteDialog(true)}
                   disabled={loading}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -186,6 +222,70 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
           </div>
         </div>
       </div>
+
+      {/* Soft Delete Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete URL?</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this URL? You can restore it within 30 days.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Permanent Delete Dialog */}
+      <Dialog open={showPermanentDeleteDialog} onOpenChange={setShowPermanentDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="w-5 h-5" />
+              Permanent Delete Warning
+            </DialogTitle>
+            <DialogDescription className="space-y-2">
+              <p className="font-semibold text-foreground">
+                This will permanently delete this URL and all its analytics data.
+              </p>
+              <p>
+                This action <strong>CANNOT be undone</strong>. Are you absolutely sure you want to continue?
+              </p>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPermanentDeleteDialog(false)}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handlePermanentDelete}
+              disabled={loading}
+            >
+              Delete Permanently
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

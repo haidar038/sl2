@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +9,6 @@ import { UrlCard } from "@/components/UrlCard";
 import { Navbar } from "@/components/Navbar";
 import { LogOut, Search, Link as LinkIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import type { User } from "@supabase/supabase-js";
 
 interface Url {
   id: string;
@@ -25,36 +24,21 @@ interface Url {
 }
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, signOut } = useAuth();
   const [urls, setUrls] = useState<Url[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState<'active' | 'deleted'>('active');
+  const [fetchError, setFetchError] = useState(false);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-      setUser(session.user);
-      fetchUrls();
-    });
+  const fetchUrls = useCallback(async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!session) {
-        navigate('/auth');
-      } else {
-        setUser(session.user);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const fetchUrls = async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const { data, error } = await supabase
         .from('urls')
@@ -64,20 +48,20 @@ export default function Dashboard() {
       if (error) throw error;
       setUrls(data || []);
     } catch (error: any) {
+      console.error("Failed to fetch URLs:", error);
+      setFetchError(true);
       toast.error(error.message || "Failed to fetch URLs");
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    fetchUrls();
+  }, [fetchUrls]);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Logged out successfully");
-      navigate('/');
-    }
+    await signOut();
   };
 
   const filteredUrls = urls
@@ -189,6 +173,17 @@ export default function Dashboard() {
           {loading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Loading...</p>
+            </div>
+          ) : fetchError ? (
+            <div className="text-center py-12 bg-card rounded-lg border border-destructive/50">
+              <BarChart3 className="w-12 h-12 mx-auto mb-4 text-destructive" />
+              <p className="text-lg font-medium mb-2 text-destructive">Failed to load URLs</p>
+              <p className="text-muted-foreground mb-6">
+                There was an error loading your URLs. Please check your connection and try again.
+              </p>
+              <Button onClick={fetchUrls} variant="outline">
+                Retry
+              </Button>
             </div>
           ) : filteredUrls.length === 0 ? (
             <div className="text-center py-12 bg-card rounded-lg border border-border">

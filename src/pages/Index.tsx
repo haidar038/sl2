@@ -63,7 +63,7 @@ export default function Index() {
             <Zap className="w-4 h-4" />
             <span className="text-sm font-medium">Powered by Edge Computing</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
             URL Shortener
             <br />
@@ -71,12 +71,12 @@ export default function Index() {
               Built for Speed
             </span>
           </h1>
-          
+
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Create, manage, and track short URLs with enterprise-grade analytics. 
+            Create, manage, and track short URLs with enterprise-grade analytics.
             Perfect for marketing campaigns, social media, and branded links.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/auth">
               <Button size="lg" variant="hero" className="text-lg px-8 py-6 gap-2">
@@ -121,9 +121,9 @@ export default function Index() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="group p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all hover:shadow-lg"
+                className="group p-6 rounded-xl bg-card border border-border hover:border-primary/30 transition-all duration-200 hover:shadow-md"
               >
-                <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center text-primary-foreground mb-4 group-hover:shadow-glow transition-all">
+                <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center text-primary-foreground mb-4 transition-shadow duration-200 group-hover:shadow-md">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
@@ -164,9 +164,9 @@ export default function Index() {
             ].map((step, index) => (
               <div
                 key={index}
-                className="flex gap-6 items-start p-6 rounded-xl bg-card border border-border hover:border-primary/50 transition-all"
+                className="group flex gap-6 items-start p-6 rounded-xl bg-card border border-border hover:border-primary/30 transition-all duration-200 hover:shadow-md"
               >
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
+                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-lg transition-shadow duration-200 group-hover:shadow-md">
                   {step.step}
                 </div>
                 <div>
@@ -182,13 +182,13 @@ export default function Index() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-primary p-12 text-center shadow-glow">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-primary p-12 text-center shadow-lg">
             <div className="relative z-10">
               <h2 className="text-4xl font-bold text-primary-foreground mb-4">
                 Ready to get started?
               </h2>
               <p className="text-xl text-primary-foreground/90 mb-8">
-                Join thousands of users who trust Lovable.dev for their link management
+                Join thousands of users who trust ShortLink for their link management
               </p>
               <Link to="/auth">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6 gap-2">
@@ -210,11 +210,11 @@ export default function Index() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
                   <LinkIcon className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-lg">Lovable.dev</span>
+                <span className="font-bold text-lg">ShortLink</span>
               </div>
-              
+
               <div className="text-center md:text-right text-sm text-muted-foreground">
-                <p>© 2025 Lovable.dev. Built with ❤️ for the web.</p>
+                <p>© 2025 ShortLink. Built with ❤️ for the web.</p>
               </div>
             </div>
           </div>

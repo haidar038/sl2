@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Claude & VS Code
+.claude
+CLAUDE.md
+.vscode
+
+# ENV
+.env
+.env.*.local
+
+# Supabase Temp
+supabase/.temp
