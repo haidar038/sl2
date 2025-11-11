@@ -2,19 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Link as LinkIcon, LayoutDashboard, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface NavbarProps {
     isAuthenticated?: boolean;
@@ -26,7 +15,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
 
     const getUserInitials = () => {
         if (user?.user_metadata?.full_name) {
-            const names = user.user_metadata.full_name.split(' ');
+            const names = user.user_metadata.full_name.split(" ");
             if (names.length >= 2) {
                 return `${names[0][0]}${names[1][0]}`.toUpperCase();
             }
@@ -35,7 +24,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
         if (user?.email) {
             return user.email[0].toUpperCase();
         }
-        return 'U';
+        return "U";
     };
 
     const getDisplayName = () => {
@@ -45,7 +34,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
         if (user?.email) {
             return user.email;
         }
-        return 'User';
+        return "User";
     };
 
     const handleLogout = async () => {
@@ -69,9 +58,7 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                                     <Avatar className="h-10 w-10">
                                         <AvatarImage src={user?.user_metadata?.avatar_url} alt={getDisplayName()} />
-                                        <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
-                                            {getUserInitials()}
-                                        </AvatarFallback>
+                                        <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">{getUserInitials()}</AvatarFallback>
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
@@ -79,18 +66,16 @@ export const Navbar = ({ isAuthenticated = false }: NavbarProps) => {
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium leading-none">{getDisplayName()}</p>
-                                        <p className="text-xs leading-none text-muted-foreground">
-                                            {user?.email}
-                                        </p>
+                                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => navigate('/dashboard')} className="cursor-pointer">
+                                <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer">
                                     <LayoutDashboard className="mr-2 h-4 w-4" />
                                     <span>Dashboard</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive">
+                                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive focus:text-destructive hover:text-white">
                                     <LogOut className="mr-2 h-4 w-4" />
                                     <span>Logout</span>
                                 </DropdownMenuItem>
