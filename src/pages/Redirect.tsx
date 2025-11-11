@@ -70,35 +70,44 @@ const Redirect = () => {
       // Parse user agent for device, browser, OS
       const { device, browser, os } = parseUserAgent(userAgent);
 
-      // Get current click count
-      const { data: currentUrl } = await supabase
-        .from('urls')
-        .select('click_count')
-        .eq('id', urlId)
-        .single();
+      // Create a browser fingerprint for pseudo-IP tracking (privacy-friendly)
+      const fingerprint = `${userAgent}-${navigator.language}-${screen.width}x${screen.height}`;
+      const ipHash = await hashString(fingerprint);
 
-      // Increment click count
-      if (currentUrl) {
-        await supabase
-          .from('urls')
-          .update({ click_count: (currentUrl.click_count || 0) + 1 })
-          .eq('id', urlId);
-      }
-
-      // Log click (without IP hash since we're client-side)
-      await supabase.from('clicks').insert({
-        url_id: urlId,
-        ip_hash: null, // Client-side can't safely get IP
-        user_agent: userAgent,
-        referrer: referrer,
-        country: null, // Would need geolocation API
-        city: null,
-        device,
-        browser,
-        os,
+      // Use the database function to track click (bypasses RLS)
+      const { error } = await supabase.rpc('track_click', {
+        p_url_id: urlId,
+        p_ip_hash: ipHash,
+        p_user_agent: userAgent,
+        p_referrer: referrer,
+        p_country: null, // Would need geolocation API
+        p_city: null,
+        p_device: device,
+        p_browser: browser,
+        p_os: os,
       });
+
+      if (error) {
+        console.error('Analytics tracking error:', error);
+      } else {
+        console.log('Click tracked successfully');
+      }
     } catch (error) {
       console.error('Analytics tracking error:', error);
+    }
+  };
+
+  // Hash function for browser fingerprint
+  const hashString = async (str: string): Promise<string> => {
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+    } catch (error) {
+      console.error('Error hashing string:', error);
+      return 'unknown';
     }
   };
 

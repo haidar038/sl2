@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateUrlDialog } from "@/components/CreateUrlDialog";
 import { UrlCard } from "@/components/UrlCard";
 import { Navbar } from "@/components/Navbar";
-import { LogOut, Search, Link as LinkIcon, BarChart3 } from "lucide-react";
+import { Search, Link as LinkIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 
 interface Url {
@@ -24,7 +24,7 @@ interface Url {
 }
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [urls, setUrls] = useState<Url[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,10 +59,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchUrls();
   }, [fetchUrls]);
-
-  const handleLogout = async () => {
-    await signOut();
-  };
 
   const filteredUrls = urls
     .filter(url => {
@@ -99,10 +95,6 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-3">
               <CreateUrlDialog onUrlCreated={fetchUrls} />
-              <Button variant="outline" onClick={handleLogout} className="gap-2">
-                <LogOut className="w-4 h-4" />
-                Logout
-              </Button>
             </div>
           </div>
 

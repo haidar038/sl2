@@ -38,3 +38,6 @@ supabase/.temp
 # Documentation build
 docs
 .vercel
+
+# Database secret files
+schema

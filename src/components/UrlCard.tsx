@@ -12,7 +12,8 @@ import {
 import { Copy, ExternalLink, QrCode, Trash2, BarChart3, RotateCcw, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { generateQRCode, downloadQRCode } from "@/lib/qrCode";
+import { QRCodeDetailModal } from "@/components/QRCodeDetailModal";
+import { AnalyticsModal } from "@/components/AnalyticsModal";
 import { format } from "date-fns";
 
 interface Url {
@@ -37,6 +38,8 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   const [loading, setLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showPermanentDeleteDialog, setShowPermanentDeleteDialog] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.host;
   const shortUrl = `https://${domain}/${url.slug}`;
   const isDeleted = !!url.deleted_at;
@@ -91,17 +94,8 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
     }
   };
 
-  const handleGenerateQR = async () => {
-    setLoading(true);
-    try {
-      const qrDataUrl = await generateQRCode(shortUrl);
-      downloadQRCode(qrDataUrl, url.slug);
-      toast.success("QR code downloaded!");
-    } catch (error) {
-      toast.error("Failed to generate QR code");
-    } finally {
-      setLoading(false);
-    }
+  const handleOpenQRModal = () => {
+    setShowQRModal(true);
   };
 
   return (
@@ -156,10 +150,13 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
           </div>
 
           <div className="text-right">
-            <div className="flex items-center gap-2 text-2xl font-bold text-primary mb-1">
+            <button
+              onClick={() => setShowAnalyticsModal(true)}
+              className="flex items-center gap-2 text-2xl font-bold text-primary mb-1 hover:opacity-80 transition-opacity cursor-pointer"
+            >
               <BarChart3 className="w-5 h-5" />
               {url.click_count}
-            </div>
+            </button>
             <p className="text-xs text-muted-foreground">clicks</p>
           </div>
         </div>
@@ -198,7 +195,15 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={handleGenerateQR}
+                  onClick={() => setShowAnalyticsModal(true)}
+                  disabled={loading}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleOpenQRModal}
                   disabled={loading}
                 >
                   <QrCode className="w-4 h-4" />
@@ -287,6 +292,22 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* QR Code Detail Modal */}
+      <QRCodeDetailModal
+        open={showQRModal}
+        onOpenChange={setShowQRModal}
+        url={shortUrl}
+        filename={url.slug}
+      />
+
+      {/* Analytics Modal */}
+      <AnalyticsModal
+        open={showAnalyticsModal}
+        onOpenChange={setShowAnalyticsModal}
+        urlId={url.id}
+        urlSlug={url.slug}
+      />
     </Card>
   );
 };
