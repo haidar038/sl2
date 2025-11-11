@@ -34,3 +34,6 @@ CLAUDE.md
 
 # Supabase Temp
 supabase/.temp
+
+# Documentation build
+docs

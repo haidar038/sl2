@@ -1,9 +1,6 @@
 {
-  "name": "ShortLink - Fast & Secure URL Shortener",
+  "name": "ShortLink",
   "short_name": "ShortLink",
-  "description": "Create, manage, and track short URLs with enterprise-grade analytics",
-  "start_url": "/",
-  "scope": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -18,8 +15,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#000000",
+  "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "display": "standalone",
-  "orientation": "any"
+  "display": "standalone"
 }

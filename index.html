@@ -6,12 +6,15 @@
         <title>ShortLink - Fast & Secure URL Shortener</title>
         <meta name="description" content="Create, manage, and track short URLs with enterprise-grade analytics. Perfect for marketing campaigns, social media, and branded links." />
         <meta name="author" content="ShortLink" />
-        <meta name="theme-color" content="#000000" />
 
-        <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <!-- Theme color - adapts to light/dark mode -->
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+        <!-- Favicon - SVG first for theme-aware support -->
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
 
