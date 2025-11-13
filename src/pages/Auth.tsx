@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Navbar } from "@/components/Navbar";
-import { Link as LinkIcon, Mail, Lock, User } from "lucide-react";
+import { Link as LinkIcon, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -19,6 +19,8 @@ export default function Auth() {
   const navigate = useNavigate();
   const { session } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [signupData, setSignupData] = useState({
     email: "",
@@ -193,13 +195,24 @@ export default function Auth() {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="login-password"
-                        type="password"
+                        type={showLoginPassword ? "text" : "password"}
                         placeholder="••••••••"
                         value={loginData.password}
                         onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                        className="pl-10"
+                        className="pl-10 pr-10"
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showLoginPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                   </div>
 
@@ -268,13 +281,24 @@ export default function Auth() {
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
                         id="signup-password"
-                        type="password"
+                        type={showSignupPassword ? "text" : "password"}
                         placeholder="••••••••"
                         value={signupData.password}
                         onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-                        className="pl-10"
+                        className="pl-10 pr-10"
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowSignupPassword(!showSignupPassword)}
+                        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showSignupPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Must be at least 6 characters long

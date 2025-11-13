@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +14,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { QRCodeDetailModal } from "@/components/QRCodeDetailModal";
 import { AnalyticsModal } from "@/components/AnalyticsModal";
+import { TagSelector } from "@/components/TagSelector";
 import { format } from "date-fns";
+
+interface TagData {
+  id: string;
+  name: string;
+  color: string;
+}
 
 interface Url {
   id: string;
@@ -40,10 +47,28 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
   const [showPermanentDeleteDialog, setShowPermanentDeleteDialog] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [tags, setTags] = useState<TagData[]>([]);
   const domain = import.meta.env.VITE_APP_DOMAIN || window.location.host;
   const shortUrl = `https://${domain}/${url.slug}`;
   const isDeleted = !!url.deleted_at;
   const isExpired = url.expiry_at && new Date(url.expiry_at) < new Date();
+
+  useEffect(() => {
+    fetchTags();
+  }, [url.id]);
+
+  const fetchTags = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_url_tags', {
+        p_url_id: url.id
+      });
+
+      if (error) throw error;
+      setTags(data || []);
+    } catch (error: any) {
+      console.error('Error fetching tags:', error);
+    }
+  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shortUrl);
@@ -143,9 +168,19 @@ export const UrlCard = ({ url, onUpdate }: UrlCardProps) => {
             </p>
 
             {url.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
                 {url.description}
               </p>
+            )}
+
+            {!isDeleted && (
+              <div className="mt-2">
+                <TagSelector
+                  urlId={url.id}
+                  selectedTags={tags}
+                  onTagsChange={fetchTags}
+                />
+              </div>
             )}
           </div>
 

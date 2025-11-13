@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { PasswordProtection } from "@/components/PasswordProtection";
 
 const Redirect = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [requiresPassword, setRequiresPassword] = useState(false);
+  const [urlData, setUrlData] = useState<any>(null);
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -42,6 +45,14 @@ const Redirect = () => {
           console.log(`URL expired: ${slug}`);
           setError('This URL has expired');
           setTimeout(() => navigate('/'), 3000);
+          return;
+        }
+
+        // Check if URL requires password
+        if (urlData.require_password) {
+          console.log(`URL requires password: ${slug}`);
+          setUrlData(urlData);
+          setRequiresPassword(true);
           return;
         }
 
@@ -135,6 +146,23 @@ const Redirect = () => {
 
     return { device, browser, os };
   };
+
+  const handlePasswordSuccess = () => {
+    if (!urlData) return;
+
+    // Track analytics
+    trackClick(urlData.id).catch(err =>
+      console.error('Failed to track click:', err)
+    );
+
+    // Redirect to target URL
+    window.location.href = urlData.target_url;
+  };
+
+  // Show password protection page if required
+  if (requiresPassword && slug) {
+    return <PasswordProtection slug={slug} onSuccess={handlePasswordSuccess} />;
+  }
 
   if (error) {
     return (

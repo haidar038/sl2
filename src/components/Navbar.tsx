@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Link as LinkIcon, LayoutDashboard, LogOut } from "lucide-react";
+import { Link as LinkIcon, LayoutDashboard, LogOut, User, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -72,6 +72,14 @@ export const Navbar = () => {
                                 <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer">
                                     <LayoutDashboard className="mr-2 h-4 w-4" />
                                     <span>Dashboard</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer">
+                                    <User className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate("/settings")} className="cursor-pointer">
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    <span>Settings</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive hover:bg-destructive hover:text-white focus:bg-destructive focus:text-white">

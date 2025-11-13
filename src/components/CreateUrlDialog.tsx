@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus, Sparkles, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { generateSlug, isValidSlug, sanitizeUrl } from "@/lib/slugGenerator";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ interface CreateUrlDialogProps {
 export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     target_url: "",
     slug: "",
@@ -34,6 +35,8 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
     description: "",
     is_public: true,
     expiry_at: "",
+    require_password: false,
+    password: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,8 +88,17 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Validate password if required
+      if (formData.require_password) {
+        if (!formData.password || formData.password.length < 4) {
+          toast.error("Password must be at least 4 characters long");
+          setLoading(false);
+          return;
+        }
+      }
+
       // Create URL
-      const { error } = await supabase.from('urls').insert({
+      const { data: newUrl, error } = await supabase.from('urls').insert({
         owner_id: user.id,
         slug: finalSlug,
         target_url: sanitizedUrl,
@@ -94,9 +106,22 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
         description: validatedData.description,
         is_public: validatedData.is_public,
         expiry_at: validatedData.expiry_at || null,
-      });
+      }).select().single();
 
       if (error) throw error;
+
+      // Set password if required
+      if (formData.require_password && formData.password && newUrl) {
+        const { error: passwordError } = await supabase.rpc('set_url_password', {
+          p_url_id: newUrl.id,
+          p_password: formData.password
+        });
+
+        if (passwordError) {
+          console.error('Error setting password:', passwordError);
+          toast.error('URL created but failed to set password');
+        }
+      }
 
       toast.success("Short URL created successfully!");
       setOpen(false);
@@ -107,6 +132,8 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
         description: "",
         is_public: true,
         expiry_at: "",
+        require_password: false,
+        password: "",
       });
       onUrlCreated?.();
     } catch (error: any) {
@@ -204,6 +231,53 @@ export const CreateUrlDialog = ({ onUrlCreated }: CreateUrlDialogProps) => {
               value={formData.expiry_at}
               onChange={(e) => setFormData({ ...formData, expiry_at: e.target.value })}
             />
+          </div>
+
+          <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Lock className="w-4 h-4 text-muted-foreground" />
+                <Label htmlFor="require_password" className="cursor-pointer">
+                  Password Protection
+                </Label>
+              </div>
+              <Switch
+                id="require_password"
+                checked={formData.require_password}
+                onCheckedChange={(checked) => setFormData({ ...formData, require_password: checked, password: checked ? formData.password : "" })}
+              />
+            </div>
+
+            {formData.require_password && (
+              <div className="space-y-2 pl-6">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    minLength={4}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Users will need this password to access the link
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-4">

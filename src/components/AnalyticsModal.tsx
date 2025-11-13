@@ -6,10 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, TrendingUp, Users, Globe, Monitor, MousePointer } from "lucide-react";
+import { Loader2, TrendingUp, Users, Globe, Monitor, MousePointer, Download } from "lucide-react";
+import { toast } from "sonner";
 import {
   LineChart,
   Line,
@@ -189,14 +191,82 @@ export const AnalyticsModal = ({ open, onOpenChange, urlId, urlSlug }: Analytics
       .slice(0, 10);
   };
 
+  // Export analytics to CSV
+  const exportToCSV = () => {
+    if (clicks.length === 0) {
+      toast.error('No data to export');
+      return;
+    }
+
+    try {
+      // Create CSV header
+      const headers = [
+        'Date & Time',
+        'Country',
+        'City',
+        'Device',
+        'Browser',
+        'OS',
+        'Referrer',
+        'IP Hash'
+      ];
+
+      // Create CSV rows
+      const rows = clicks.map(click => [
+        format(parseISO(click.created_at), 'yyyy-MM-dd HH:mm:ss'),
+        click.country || 'Unknown',
+        click.city || 'Unknown',
+        click.device || 'Unknown',
+        click.browser || 'Unknown',
+        click.os || 'Unknown',
+        click.referrer || 'Direct',
+        click.ip_hash ? click.ip_hash.substring(0, 16) + '...' : 'N/A'
+      ]);
+
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+
+      link.setAttribute('href', url);
+      link.setAttribute('download', `analytics-${urlSlug}-${format(new Date(), 'yyyy-MM-dd')}.csv`);
+      link.style.visibility = 'hidden';
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success('Analytics exported successfully!');
+    } catch (error) {
+      console.error('Error exporting CSV:', error);
+      toast.error('Failed to export analytics');
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Analytics for /{urlSlug}</DialogTitle>
-          <DialogDescription>
-            Detailed analytics and insights for your short URL
-          </DialogDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle>Analytics for /{urlSlug}</DialogTitle>
+              <DialogDescription>
+                Detailed analytics and insights for your short URL
+              </DialogDescription>
+            </div>
+            {!loading && clicks.length > 0 && (
+              <Button onClick={exportToCSV} variant="outline" size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                Export CSV
+              </Button>
+            )}
+          </div>
         </DialogHeader>
 
         {loading ? (
