@@ -6,13 +6,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { CookieConsent } from "@/components/CookieConsent";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Sitemap from "./pages/Sitemap";
+import Accessibility from "./pages/Accessibility";
+import CookieSettings from "./pages/CookieSettings";
 import Redirect from "./pages/Redirect";
 import NotFound from "./pages/NotFound";
+import { SlugRouteGuard } from "./components/SlugRouteGuard";
 
 const queryClient = new QueryClient();
 
@@ -44,10 +51,16 @@ const AppContent = () => {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Static routes - these MUST match before dynamic routes */}
             <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route path="auth" element={<Auth />} />
+            <Route path="privacy" element={<Privacy />} />
+            <Route path="terms" element={<Terms />} />
+            <Route path="sitemap" element={<Sitemap />} />
+            <Route path="accessibility" element={<Accessibility />} />
+            <Route path="cookies" element={<CookieSettings />} />
             <Route
-              path="/dashboard"
+              path="dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -55,7 +68,7 @@ const AppContent = () => {
               }
             />
             <Route
-              path="/profile"
+              path="profile"
               element={
                 <ProtectedRoute>
                   <Profile />
@@ -63,18 +76,19 @@ const AppContent = () => {
               }
             />
             <Route
-              path="/settings"
+              path="settings"
               element={
                 <ProtectedRoute>
                   <Settings />
                 </ProtectedRoute>
               }
             />
-            {/* Short URL redirect - must be before catch-all route */}
-            <Route path="/:slug" element={<Redirect />} />
-            {/* Catch-all 404 route - must be last */}
+            {/* Dynamic route for short URLs */}
+            <Route path=":slug" element={<SlugRouteGuard />} />
+            {/* Catch-all 404 route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <CookieConsent />
         </AuthProvider>
       </BrowserRouter>
     </>

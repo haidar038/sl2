@@ -1,18 +1,26 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
-import { 
-  Link as LinkIcon, 
-  BarChart3, 
-  QrCode, 
-  Shield, 
-  Zap, 
+import { Footer } from "@/components/Footer";
+import {
+  Link as LinkIcon,
+  BarChart3,
+  QrCode,
+  Shield,
+  Zap,
   Globe,
   ArrowRight,
   CheckCircle
 } from "lucide-react";
 
 export default function Index() {
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById('features-section');
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
@@ -84,11 +92,14 @@ export default function Index() {
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Link to="/auth">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                View Demo
-              </Button>
-            </Link>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-lg px-8 py-6"
+              onClick={scrollToFeatures}
+            >
+              Learn More
+            </Button>
           </div>
 
           {/* Stats */}
@@ -106,7 +117,7 @@ export default function Index() {
       </section>
 
       {/* Features Grid */}
-      <section className="container mx-auto px-4 py-20">
+      <section id="features-section" className="container mx-auto px-4 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -201,25 +212,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <LinkIcon className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="font-bold text-lg">ShortLink</span>
-              </div>
-
-              <div className="text-center md:text-right text-sm text-muted-foreground">
-                <p>© 2025 ShortLink. Built with ❤️ for the web.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

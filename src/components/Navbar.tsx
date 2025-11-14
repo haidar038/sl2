@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Link as LinkIcon, LayoutDashboard, LogOut, User, Settings } from "lucide-react";
+import { LayoutDashboard, LogOut, User, Settings } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Logo } from "@/components/Logo";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -43,11 +44,8 @@ export const Navbar = () => {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
             <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-2 font-bold text-xl transition-opacity duration-200 hover:opacity-80">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                        <LinkIcon className="w-5 h-5 text-primary-foreground" />
-                    </div>
-                    <span className="bg-gradient-primary bg-clip-text text-transparent">ShortLink</span>
+                <Link to="/" className="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80">
+                    <Logo size="md" className="h-8" />
                 </Link>
 
                 <div className="flex items-center gap-4">

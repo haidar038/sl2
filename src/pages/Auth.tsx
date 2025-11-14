@@ -8,7 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Navbar } from "@/components/Navbar";
-import { Link as LinkIcon, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -150,8 +151,8 @@ export default function Auth() {
       <div className="flex items-center justify-center p-4 pt-24">
         <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary mb-4 shadow-glow">
-            <LinkIcon className="w-8 h-8 text-primary-foreground" />
+          <div className="inline-flex items-center justify-center mb-4">
+            <Logo variant="secondary" size="lg" className="h-20 w-20 drop-shadow-lg" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Welcome to ShortLink</h1>
           <p className="text-muted-foreground">Create and manage your short URLs</p>
