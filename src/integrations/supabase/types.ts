@@ -278,6 +278,7 @@ export type Database = {
         Args: { p_guest_session_id: string; p_user_id: string }
         Returns: { migrated_count: number; url_ids: string[] }[]
       }
+      permanent_delete_url: { Args: { url_id: string }; Returns: undefined }
       remove_tag_from_url: {
         Args: { p_url_id: string; p_tag_id: string }
         Returns: undefined
