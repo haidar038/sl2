@@ -133,6 +133,69 @@ export type Database = {
         }
         Relationships: []
       }
+      tags: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      url_tags: {
+        Row: {
+          created_at: string
+          id: string
+          tag_id: string
+          url_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tag_id: string
+          url_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tag_id?: string
+          url_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "url_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "url_tags_url_id_fkey"
+            columns: ["url_id"]
+            isOneToOne: false
+            referencedRelation: "urls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       urls: {
         Row: {
           click_count: number | null
@@ -140,10 +203,13 @@ export type Database = {
           deleted_at: string | null
           description: string | null
           expiry_at: string | null
+          guest_created_at: string | null
+          guest_session_id: string | null
           id: string
+          is_guest: boolean | null
           is_public: boolean | null
           meta: Json | null
-          owner_id: string
+          owner_id: string | null
           slug: string
           target_url: string
           title: string | null
@@ -155,10 +221,13 @@ export type Database = {
           deleted_at?: string | null
           description?: string | null
           expiry_at?: string | null
+          guest_created_at?: string | null
+          guest_session_id?: string | null
           id?: string
+          is_guest?: boolean | null
           is_public?: boolean | null
           meta?: Json | null
-          owner_id: string
+          owner_id?: string | null
           slug: string
           target_url: string
           title?: string | null
@@ -170,10 +239,13 @@ export type Database = {
           deleted_at?: string | null
           description?: string | null
           expiry_at?: string | null
+          guest_created_at?: string | null
+          guest_session_id?: string | null
           id?: string
+          is_guest?: boolean | null
           is_public?: boolean | null
           meta?: Json | null
-          owner_id?: string
+          owner_id?: string | null
           slug?: string
           target_url?: string
           title?: string | null
@@ -186,6 +258,30 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_tag_to_url: {
+        Args: { p_url_id: string; p_tag_id: string }
+        Returns: undefined
+      }
+      cleanup_old_guest_urls: {
+        Args: { p_days_old?: number }
+        Returns: { deleted_count: number }[]
+      }
+      get_guest_url_count: {
+        Args: { p_guest_session_id: string }
+        Returns: number
+      }
+      get_url_tags: {
+        Args: { p_url_id: string }
+        Returns: { id: string; name: string; color: string }[]
+      }
+      migrate_guest_urls_to_user: {
+        Args: { p_guest_session_id: string; p_user_id: string }
+        Returns: { migrated_count: number; url_ids: string[] }[]
+      }
+      remove_tag_from_url: {
+        Args: { p_url_id: string; p_tag_id: string }
+        Returns: undefined
+      }
       restore_url: { Args: { url_id: string }; Returns: undefined }
       soft_delete_url: { Args: { url_id: string }; Returns: undefined }
     }

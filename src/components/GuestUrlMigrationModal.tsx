@@ -17,6 +17,7 @@ import {
   getGuestSessionId,
   getGuestUrlCount,
   clearGuestSession,
+  syncGuestUrlsWithDatabase,
 } from "@/lib/guestSession";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -37,16 +38,49 @@ export function GuestUrlMigrationModal() {
     // Only check once per session when user is authenticated
     if (!user || !session || hasChecked) return;
 
-    const guestSessionId = getGuestSessionId();
-    const urlCount = getGuestUrlCount();
+    const checkGuestUrls = async () => {
+      const guestSessionId = getGuestSessionId();
 
-    // Show modal if user has guest URLs
-    if (guestSessionId && urlCount > 0) {
-      setGuestUrlCount(urlCount);
-      setShowModal(true);
-    }
+      if (!guestSessionId) {
+        setHasChecked(true);
+        return;
+      }
 
-    setHasChecked(true);
+      // Verify actual URLs from database instead of localStorage
+      try {
+        const { data, error } = await supabase
+          .from("urls")
+          .select("slug")
+          .eq("guest_session_id", guestSessionId)
+          .eq("is_guest", true)
+          .is("deleted_at", null);
+
+        if (error) {
+          console.error("Error checking guest URLs:", error);
+          setHasChecked(true);
+          return;
+        }
+
+        // Sync localStorage with database (remove URLs that no longer exist)
+        const validSlugs = data?.map(url => url.slug) || [];
+        syncGuestUrlsWithDatabase(validSlugs);
+
+        // Only show modal if there are actual guest URLs in database
+        if (data && data.length > 0) {
+          setGuestUrlCount(data.length);
+          setShowModal(true);
+        } else {
+          // No valid guest URLs, clear session
+          clearGuestSession();
+        }
+      } catch (error) {
+        console.error("Error in checkGuestUrls:", error);
+      }
+
+      setHasChecked(true);
+    };
+
+    checkGuestUrls();
   }, [user, session, hasChecked]);
 
   const handleMigrate = async () => {
@@ -73,11 +107,11 @@ export function GuestUrlMigrationModal() {
         return;
       }
 
-      // Clear guest session from localStorage
-      clearGuestSession();
-
       // Close modal first
       setShowModal(false);
+
+      // Clear guest session from localStorage
+      clearGuestSession();
 
       // Show success message
       const migratedCount = data?.[0]?.migrated_count || 0;

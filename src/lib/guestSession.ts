@@ -285,3 +285,26 @@ export function getGuestSessionSummary() {
     timeUntilReset: getTimeUntilReset(),
   };
 }
+
+/**
+ * Sync localStorage with database state
+ * Removes URLs from localStorage that no longer exist in database
+ */
+export function syncGuestUrlsWithDatabase(validSlugs: string[]): void {
+  const currentUrls = getGuestUrls();
+  const validUrls = currentUrls.filter(url => validSlugs.includes(url.slug));
+
+  // Update localStorage with only valid URLs
+  if (validUrls.length !== currentUrls.length) {
+    localStorage.setItem(GUEST_URLS_KEY, JSON.stringify(validUrls));
+  }
+}
+
+/**
+ * Remove specific URL from localStorage by slug
+ */
+export function removeGuestUrl(slug: string): void {
+  const urls = getGuestUrls();
+  const updatedUrls = urls.filter(url => url.slug !== slug);
+  localStorage.setItem(GUEST_URLS_KEY, JSON.stringify(updatedUrls));
+}
