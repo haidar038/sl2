@@ -210,6 +210,8 @@ export type Database = {
           is_public: boolean | null
           meta: Json | null
           owner_id: string | null
+          password_hash: string | null
+          require_password: boolean | null
           slug: string
           target_url: string
           title: string | null
@@ -228,6 +230,8 @@ export type Database = {
           is_public?: boolean | null
           meta?: Json | null
           owner_id?: string | null
+          password_hash?: string | null
+          require_password?: boolean | null
           slug: string
           target_url: string
           title?: string | null
@@ -246,6 +250,8 @@ export type Database = {
           is_public?: boolean | null
           meta?: Json | null
           owner_id?: string | null
+          password_hash?: string | null
+          require_password?: boolean | null
           slug?: string
           target_url?: string
           title?: string | null
@@ -284,7 +290,29 @@ export type Database = {
         Returns: undefined
       }
       restore_url: { Args: { url_id: string }; Returns: undefined }
+      set_url_password: {
+        Args: { p_url_id: string; p_password: string }
+        Returns: undefined
+      }
       soft_delete_url: { Args: { url_id: string }; Returns: undefined }
+      track_click: {
+        Args: {
+          p_url_id: string
+          p_ip_hash?: string | null
+          p_user_agent?: string | null
+          p_referrer?: string | null
+          p_country?: string | null
+          p_city?: string | null
+          p_device?: string | null
+          p_browser?: string | null
+          p_os?: string | null
+        }
+        Returns: undefined
+      }
+      verify_url_password: {
+        Args: { p_slug: string; p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
