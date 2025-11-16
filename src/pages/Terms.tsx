@@ -370,8 +370,8 @@ export default function Terms() {
                   If you have any questions about these Terms of Service, please contact us:
                 </p>
                 <ul className="space-y-1">
-                  <li>Email: legal@shortlink.example.com</li>
-                  <li>Website: https://shortlink.example.com</li>
+                  <li>Email: haidar038@gmail..com</li>
+                  <li>Website: https://haidar038.vercel.app</li>
                 </ul>
               </div>
             </section>
