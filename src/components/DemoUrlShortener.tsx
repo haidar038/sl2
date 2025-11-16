@@ -11,10 +11,12 @@ import {
   AlertCircle,
   QrCode,
   ArrowRight,
+  LogIn,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   getOrCreateGuestSessionId,
   addGuestUrl,
@@ -27,6 +29,7 @@ import { generateSlug, sanitizeUrl } from "@/lib/slugGenerator";
 import { generateQRCode, downloadQRCode } from "@/lib/qrCode";
 
 export function DemoUrlShortener() {
+  const { user } = useAuth();
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -165,6 +168,35 @@ export function DemoUrlShortener() {
 
   const remainingQuota = getRemainingUrlQuota();
   const isLimited = isRateLimited();
+
+  // If user is already logged in, show different UI
+  if (user) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <Card className="p-8 bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/30 text-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <LogIn className="w-8 h-8 text-primary" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold">You're Already Signed In!</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Great! You have full access to all features. Head to your dashboard to create and manage unlimited URLs with advanced features.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+              <Link to="/dashboard">
+                <Button size="lg" className="gap-2">
+                  Go to Dashboard
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">

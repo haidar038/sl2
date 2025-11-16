@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,8 @@ import { useAuth } from "@/contexts/AuthContext";
  */
 export function GuestUrlMigrationModal() {
   const { user, session } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const [guestUrlCount, setGuestUrlCount] = useState(0);
   const [migrating, setMigrating] = useState(false);
@@ -73,6 +76,9 @@ export function GuestUrlMigrationModal() {
       // Clear guest session from localStorage
       clearGuestSession();
 
+      // Close modal first
+      setShowModal(false);
+
       // Show success message
       const migratedCount = data?.[0]?.migrated_count || 0;
       if (migratedCount > 0) {
@@ -81,8 +87,14 @@ export function GuestUrlMigrationModal() {
         );
       }
 
-      // Close modal
-      setShowModal(false);
+      // Redirect to dashboard if not already there, or reload to refresh data
+      if (location.pathname === "/dashboard") {
+        // Reload page to refresh URLs
+        window.location.reload();
+      } else {
+        // Navigate to dashboard
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Error in migration:", error);
       toast.error("Something went wrong. Please try again.");
