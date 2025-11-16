@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { DemoUrlShortener } from "@/components/DemoUrlShortener";
 import {
   Link as LinkIcon,
   BarChart3,
@@ -113,6 +114,22 @@ export default function Index() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Live Demo Section */}
+      <section className="container mx-auto px-4 py-20 bg-muted/30">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Try it now, no signup required
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Experience the power of ShortLink instantly. Create your first short link in seconds.
+            </p>
+          </div>
+
+          <DemoUrlShortener />
         </div>
       </section>
 

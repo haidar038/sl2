@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { CookieConsent } from "@/components/CookieConsent";
+import { GuestUrlMigrationModal } from "@/components/GuestUrlMigrationModal";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -89,6 +90,7 @@ const AppContent = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieConsent />
+          <GuestUrlMigrationModal />
         </AuthProvider>
       </BrowserRouter>
     </>
