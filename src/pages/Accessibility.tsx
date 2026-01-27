@@ -1,10 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Eye, Keyboard, Monitor, Type, Volume2, CheckCircle, Mail } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 export default function Accessibility() {
     return (
         <div className="min-h-screen bg-gradient-subtle">
+            <SEO title="Accessibility Statement" description="Accessibility Statement for ShortLink. We are committed to ensuring digital accessibility for people with disabilities." />
             <Navbar />
 
             <div className="container mx-auto px-4 pt-24 pb-12">

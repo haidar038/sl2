@@ -1,10 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Shield, Cookie, Database, Lock, Eye, Mail } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 export default function Privacy() {
     return (
         <div className="min-h-screen bg-gradient-subtle">
+            <SEO title="Privacy Policy" description="Privacy Policy for ShortLink. Learn how we collect, use, and protect your data." />
             <Navbar />
 
             <div className="container mx-auto px-4 pt-24 pb-12">
