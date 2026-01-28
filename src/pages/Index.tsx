@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { DemoUrlShortener } from "@/components/DemoUrlShortener";
-import { Link as LinkIcon, BarChart3, QrCode, Shield, Zap, Globe, ArrowRight, ArrowRight, CheckCircle } from "lucide-react";
+import { Link as LinkIcon, BarChart3, QrCode, Shield, Zap, Globe, ArrowRight, CheckCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
 export default function Index() {
