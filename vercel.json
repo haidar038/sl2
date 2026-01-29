@@ -49,19 +49,6 @@
                     "value": "public, max-age=31536000, immutable"
                 }
             ]
-        },
-        {
-            "source": "/googledb6605d07a2ef7ce.html",
-            "headers": [
-                {
-                    "key": "Content-Type",
-                    "value": "text/html; charset=utf-8"
-                },
-                {
-                    "key": "Cache-Control",
-                    "value": "public, max-age=3600, must-revalidate"
-                }
-            ]
         }
     ],
     "rewrites": [
